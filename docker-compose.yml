@@ -6,7 +6,7 @@ services:
     volumes:
       - "./app:/src/app"
     ports:
-      - "3030:3000"
+      - "3000"
     command: nodemon -L app/bin/www
 
   nginx:
@@ -26,4 +26,8 @@ services:
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: 1
     ports:
-      - "3306:3306"
+      - "3306"
+    networks:
+      default: 
+        aliases:
+          - "my-db"  
