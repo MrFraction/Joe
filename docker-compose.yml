@@ -8,7 +8,10 @@ services:
     ports:
       - "3000"
     command: nodemon -L app/bin/www
-
+    networks:
+      default:
+        aliases:
+          - "web"
   nginx:
     restart: always
     build: ./nginx/
