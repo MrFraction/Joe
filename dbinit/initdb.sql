@@ -5,7 +5,7 @@ CREATE TABLE action
   id int NOT NULL AUTO_INCREMENT,
   ota varchar(255),
   pickup varchar(255),
-  booking_date datetime,
+  booking_date varchar(255),
   PRIMARY KEY (id)
 );
 

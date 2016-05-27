@@ -64,6 +64,18 @@ router
   })
   .post('/api/action', function(req, res, next) {
     var ac = req.body
+    var dd = ac.date
+    var checkDate = new Date(dd)
+    if(checkDate.toString() == "Invalid Date") {
+      res.json({"error": "Invalid values"})
+      return;
+    } else {
+      var dateString = checkDate.toISOString().substring(0, 10)
+      if(dateString != dd) {
+        res.json({"error": "Invalid values"})
+        return;
+      }
+    }
     var doOtaExistQuery = "SELECT id FROM ota where name = '"+ ac.ota +"' LIMIT 1"
     connection.query(doOtaExistQuery, function(err, rows, fields) {
       if(rows.length == 0 ) {
@@ -71,7 +83,7 @@ router
         res.json({"error": "OTA code not in our database"})
         return;
       }
-      
+
       var query = "INSERT into action (ota, pickup, booking_date) VALUES ('"+ac.ota+"', '"+ac.plo+"', '"+ac.date+"');"
       connection.query(query, function(err, rows, fields) {
         if (err) {
@@ -85,8 +97,18 @@ router
 
   })
   .get('/api/recommend/:year/:month', function(req, res, next) {
-    console.log("inside api recomment")
-    console.log(req.params.year, req.params.month)
+    console.log(req.params)
+    var almostDate = req.params.year+"-"+req.params.month;
+    console.log(almostDate)
+    var query = "SELECT count(*) as count, ota FROM action where booking_date >= '" + almostDate + "' AND booking_date <= '"+ almostDate +"-9' GROUP BY ota LIMIT 5";
+    connection.query(query, function(err, rows, fields) {
+      if (err) {
+        console.error(err);
+      }
+
+      res.json(rows);
+    })
+
   })
 
 module.exports = router;
