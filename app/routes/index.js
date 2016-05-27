@@ -41,8 +41,8 @@ router
   })
   .post('/api/otaequipment', function(req, res, next) {
     var eq = req.body;
-    var query = "INSERT into ota (name, description) VALUES ('"+eq.ota+"', '"+eq.description+"');"
-    connection.query(query, function(err, rows, fields) {
+    var query = "INSERT into ota (name, description) VALUES (?, ?);"
+    connection.query(query, [eq.ota, eq.description], function(err, rows, fields) {
       if (err) {
         console.error(err);
       }
@@ -75,16 +75,16 @@ router
         return;
       }
     }
-    var doOtaExistQuery = "SELECT id FROM ota where name = '"+ ac.ota +"' LIMIT 1"
-    connection.query(doOtaExistQuery, function(err, rows, fields) {
+    var doOtaExistQuery = "SELECT id FROM ota where name = ? LIMIT 1"
+    connection.query(doOtaExistQuery, [ac.ota], function(err, rows, fields) {
       if(rows.length == 0 ) {
         // throw err
         res.json({"error": "OTA code not in our database"})
         return;
       }
 
-      var query = "INSERT into action (ota, pickup, booking_date) VALUES ('"+ac.ota+"', '"+ac.plo+"', '"+ac.date+"');"
-      connection.query(query, function(err, rows, fields) {
+      var query = "INSERT into action (ota, pickup, booking_date) VALUES (?, ?, ?);"
+      connection.query(query, [ac.ota, ac.plo, ac.date], function(err, rows, fields) {
         if (err) {
           console.error(err);
         }
@@ -103,8 +103,8 @@ router
       return;
     }
 
-    var query = "SELECT count(*) as count, ota FROM action where booking_date >= '" + almostDate + "' AND booking_date <= '"+ almostDate +"-9' GROUP BY ota LIMIT 5";
-    connection.query(query, function(err, rows, fields) {
+    var query = "SELECT count(*) as count, ota FROM action where booking_date >= ? AND booking_date <= ? GROUP BY ota LIMIT 5";
+    connection.query(query, [almostDate, almostDate + '-9'], function(err, rows, fields) {
       if (err) {
         console.error(err);
       }
