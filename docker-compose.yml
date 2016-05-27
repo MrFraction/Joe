@@ -1,0 +1,30 @@
+web:
+  build: ./app
+  volumes:
+    - "./app:/src/app"
+  ports:
+    - "3030:3000"
+  links:
+    - "db:mysql"
+  command: nodemon -L app/bin/www
+
+nginx:
+  restart: always
+  build: ./nginx/
+  ports:
+    - "80:80"
+  volumes:
+    - /www/public
+  volumes_from:
+    - web
+  links:
+    - web:web
+
+db:
+  image: mysql
+  volumes:
+    - ./dbinit:/docker-entrypoint-initdb.d
+  environment:
+        MYSQL_ALLOW_EMPTY_PASSWORD: 1
+  ports:
+    - "3306:3306"
