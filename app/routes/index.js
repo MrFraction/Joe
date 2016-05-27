@@ -97,8 +97,12 @@ router
 
   })
   .get('/api/recommend/:year/:month', function(req, res, next) {
-    console.log(req.params)
     var almostDate = req.params.year+"-"+req.params.month;
+
+    if (!(/^\d{4}-\d{2}$/.test(almostDate))) {
+      res.json({"error": "Invalid values"})
+      return;
+    }
     console.log(almostDate)
     var query = "SELECT count(*) as count, ota FROM action where booking_date >= '" + almostDate + "' AND booking_date <= '"+ almostDate +"-9' GROUP BY ota LIMIT 5";
     connection.query(query, function(err, rows, fields) {
