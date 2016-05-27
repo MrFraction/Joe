@@ -36,7 +36,6 @@ router
         console.error(err);
       }
 
-      console.log(rows);
       res.json(rows);
     })
   })
@@ -103,7 +102,7 @@ router
       res.json({"error": "Invalid values"})
       return;
     }
-    console.log(almostDate)
+
     var query = "SELECT count(*) as count, ota FROM action where booking_date >= '" + almostDate + "' AND booking_date <= '"+ almostDate +"-9' GROUP BY ota LIMIT 5";
     connection.query(query, function(err, rows, fields) {
       if (err) {
