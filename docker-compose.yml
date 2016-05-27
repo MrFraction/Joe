@@ -17,7 +17,7 @@ services:
       - "80:80"
     volumes:
       - /www/public
-      - /etc/letsencrypt:/certs
+      - /etc/letsencrypt:/certs/letsencrypt
     volumes_from:
       - web
 
